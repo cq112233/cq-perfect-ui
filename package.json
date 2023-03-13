@@ -1,8 +1,12 @@
 {
-  "name": "cq-beeter-ui",
-  "private": true,
-  "version": "0.0.0",
+  "name": "cq-perfect-ui",
+  "version": "1.0.0",
+  "private": false,
+  "description": "cq-perfect-ui组件库",
+  "author": "ChenQi",
   "type": "module",
+  "keyword": "ui cq-perfect-ui perfect element",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
