@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-13 23:35:27
+ * @LastEditTime: 2023-03-14 01:59:06
  * @Description: ~
  */
 import { defineConfig } from 'vite'
@@ -25,7 +25,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue'
         }
-      }
+      },
     }
   },
   resolve: {

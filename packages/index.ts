@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-08 09:29:08
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-14 00:25:00
+ * @LastEditTime: 2023-03-14 01:43:49
  * @Description: ~
  */
 // 导入颜色选择器组件
@@ -19,7 +19,7 @@ const components:Record<string,any> = Object.keys(modules).reduce((pre, cur) => 
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册
 const install = function (App) {
   // 遍历注册全局组件
-  components.keys().forEach(element => {
+  Object.keys(components).forEach(element => {
     App.component(element, defineAsyncComponent(components[element]))
   })
 }
