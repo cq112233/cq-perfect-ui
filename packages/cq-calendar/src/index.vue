@@ -173,7 +173,7 @@ const props = defineProps({
   },
   // 自定义快速选择日期面板
   shortcuts: {
-    type: Array,
+    type: Object,
     default: () => {
       return [
         // {
@@ -310,9 +310,9 @@ watch(
   () => props.value,
   (values) => {
     values.forEach((item) => {
-      selectedMap.value.set(getTodayStart(item).format(format), true)
+      selectedMap.value.set(getTodayStart(item as any).format(format), true)
     })
-    dates.value = values.map(item => getTodayStart(item).format(format)).join(separator)
+    dates.value = values.map(item => getTodayStart(item as any).format(format)).join(separator)
   },
   {
     immediate: true
@@ -331,7 +331,7 @@ watch(
 const show = () => {
   initMonthDate = monthDate.clone()
   initValue.value = cloneDeep(props.value)
-  initSelectedMap.value = cloneDeep(selectedMap.value)
+  initSelectedMap.value = cloneDeep(selectedMap.value) as any
 }
 
 // 生产日历
@@ -401,7 +401,7 @@ const addFontIcon = () => {
  * @author: chen qi
  */
 function handlerMonth (diff, type = 'months') {
-  monthDate = monthDate.add(diff, type)
+  monthDate = monthDate.add(diff, type as any)
   getManyMonths()
 }
 
@@ -421,7 +421,7 @@ function cancel () {
   initValue.value.forEach((v) => {
     selectedMap.value.set(v, true)
   })
-  selectedMap.value = initSelectedMap.value
+  selectedMap.value = initSelectedMap.value as any
   monthDate = initMonthDate
   getManyMonths()
   visible.value = false
@@ -463,7 +463,7 @@ function selectDate (dateInstance) {
  */
 const cascadeDate = (dateInstance) => {
   if (props.value.length === 1) {
-    const first = dayjs(props.value[0]).valueOf()
+    const first = dayjs(props.value[0] as any).valueOf()
     const seconde = dayjs(dateInstance.momentDate).valueOf()
     // 判断获取时间 包括自身的时间
     let betweenTimes = getTimesBetween(
@@ -708,7 +708,7 @@ const deleteDays = (day) => {
   // 去除休息日 0星期天 6星期六
   if (day === 'restDate') {
     temp = props.value.filter((item) => {
-      const weekNum = getTodayStart(item).day()
+      const weekNum = getTodayStart(item as any).day()
       if (weekNum === 0 || weekNum === 6) {
         return false
       }
@@ -717,7 +717,7 @@ const deleteDays = (day) => {
   } else {
     temp = props.value.filter((item) => {
       const t = legalDateClone.map(item => getTodayStart(item).format(format))
-      return !t.includes(getTodayStart(item).format(format))
+      return !t.includes(getTodayStart(item as any).format(format))
     })
   }
   selectedMap.value = new Map()

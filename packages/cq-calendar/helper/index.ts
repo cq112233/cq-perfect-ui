@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-07 16:35:39
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-10 09:42:09
+ * @LastEditTime: 2023-03-14 01:21:16
  * @Description: ~
  */
 import dayjs from 'dayjs'
@@ -89,7 +89,7 @@ export function getWeekDays (current = dayjs(), j = 7, format = 'YYYY/MM/DD') {
  * @return {*}
  * @author: chen qi
  */
-export function getTimesBetween (startTimestamp, endTimestamp, format = 'YYYY-MM-DD HH:mm:ss') {
+export function getTimesBetween (startTimestamp:any, endTimestamp:any, format = 'YYYY-MM-DD HH:mm:ss') {
   let start = dayjs(startTimestamp)
   const end = dayjs(endTimestamp)
   const times = []
