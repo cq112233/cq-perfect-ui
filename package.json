@@ -7,6 +7,7 @@
   "type": "module",
   "keyword": "ui cq-perfect-ui perfect element",
   "license": "MIT",
+  "main": "./lib/cq-perfect-ui.es.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
