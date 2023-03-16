@@ -5,7 +5,7 @@ let uid = 0
  * @Author: chen qi
  * @Date: 2023-03-15 23:28:26
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-16 00:42:07
+ * @LastEditTime: 2023-03-16 09:33:54
  * @Description: 小怪
  */
 export default class Monster {
