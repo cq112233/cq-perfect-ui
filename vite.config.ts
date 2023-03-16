@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-14 09:28:41
+ * @LastEditTime: 2023-03-15 21:28:17
  * @Description: ~
  */
 import { defineConfig } from 'vite'
@@ -11,6 +11,10 @@ import { resolve } from "path"
 import pkg from './package.json' 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server:{
+    host: true,
+    port:3000
+  },
   plugins: [vue()],
   build: {
     outDir: './lib',

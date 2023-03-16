@@ -2,14 +2,14 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-14 01:43:09
+ * @LastEditTime: 2023-03-14 09:46:57
  * @Description: ~
 -->
 
 
 <template>
-  <router-link to="/">home</router-link>
-  <router-link to="/about">about</router-link>
+  <!-- <router-link to="/">home</router-link>
+  <router-link to="/about">about</router-link> -->
   <router-view></router-view>
   <CqChart/>
   <CqCalendar v-model:value="value"/>
@@ -18,8 +18,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-// import { CqCalendar, CqChart } from '../packages/index'
-import { CqCalendar, CqChart } from '../lib/cq-perfect-ui.es.js'
+import { CqCalendar, CqChart } from '../packages/index'
+// import { CqCalendar, CqChart } from '../lib/cq-perfect-ui.es.js'
 import '../lib/style.css'
 const value = ref([])
 </script>

@@ -129,8 +129,8 @@ import {
   defineProps,
   defineEmits,
   watch,
-  nextTick
-
+  nextTick,
+  defineExpose
 } from 'vue'
 import {
   getDate,
@@ -591,6 +591,12 @@ function getDateLists (time) {
   setCols(tempDateList)
   // 设置所在行
   setRows(tempDateList)
+
+  // create钩子
+  tempDateList.forEach(day => {
+      hooks.createdDateHook(day)
+  });
+  
   return tempDateList
 }
 
@@ -630,8 +636,6 @@ const setDayDate = (
     realColMaxNum: 0, // 最大列
     isDisabled: !(dayjs(maxDate).valueOf() >= getTodayStart(dayDate).valueOf() && getTodayStart(dayDate).valueOf() >= dayjs(minDate).valueOf()) // 禁用
   }
-  // 设置禁用钩子
-  hooks.createdDateHook(day)
 
   tempDateList[type](day)
 }
