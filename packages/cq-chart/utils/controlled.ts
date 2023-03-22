@@ -6,7 +6,7 @@ import Cullet from './cullet'
  * @Author: chen qi
  * @Date: 2023-03-13 21:54:40
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-16 01:25:10
+ * @LastEditTime: 2023-03-17 23:20:34
  * @Description: 角色
  */
 type Options = {
@@ -21,15 +21,15 @@ export default class Controlled {
   x: number // 圆心坐标x
   y: number // 圆心坐标y
   radius: number // 半径
-  lastTime: number
-  isMove:boolean
+  isMove:boolean //移动状态
   count = 0
   options: Options = {
     lineWidth: getHdNum(1),
     fillStyle: '#fff', // 填充色
     strokeStyle: '#fff'
   }
-  controller: Controller
+  controller: Controller // 控制器
+  culletList:Cullet[] = [] // 子弹
   constructor(x: number, y: number, r: number, option?: Options) {
     this.x = x
     this.y = y
@@ -45,9 +45,11 @@ export default class Controlled {
    * @author: chen qi
    */
   createBullets(speed) {
-    let cullet = new Cullet(this.x, this.y,speed)
+    let cullet = new Cullet(this.x, this.y,speed,this)
     cullet.setChart(this.chart)
-    cullet.draw(this)
+    cullet.audio.play()
+    this.culletList.push(cullet)
+    cullet.draw()
   }
   stopMove() {
     this.isMove = false
@@ -136,9 +138,6 @@ export default class Controlled {
    * @author: chen qi
    */
   draw() {
-    // window.requestAnimationFrame(() => {
-    //   this.draw()
-    // })
     this.ctx.beginPath()
     this.ctx.lineWidth = this.options.lineWidth
     this.ctx.strokeStyle = this.options?.strokeStyle

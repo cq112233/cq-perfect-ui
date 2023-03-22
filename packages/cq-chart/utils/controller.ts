@@ -5,11 +5,12 @@ import Controlled from './controlled'
  * @Author: chen qi
  * @Date: 2023-03-14 15:58:54
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-16 01:07:32
+ * @LastEditTime: 2023-03-17 09:26:57
  * @Description: 控制器
  */
 export default class Controller {
-  xSpeed: number = getHdNum(5) //
+  controlled:Controlled
+  xSpeed: number = getHdNum(5) 
   ySpeed: number = getHdNum(5)
   operation = {
     ArrowUp:{
@@ -31,6 +32,7 @@ export default class Controller {
   }
   lastTime: number
   constructor(dom: HTMLCanvasElement, controlled: Controlled) {
+    this.controlled = controlled
     dom.addEventListener(
       'keydown',
       (e) => {

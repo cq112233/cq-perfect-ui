@@ -2,20 +2,16 @@
  * @Author: chen qi
  * @Date: 2023-03-13 21:39:45
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-16 09:23:36
- * @Description: ~
- */
-/*
- * @Author: chen qi
- * @Date: 2023-03-13 21:39:45
- * @LastEditors: chen qi
- * @LastEditTime: 2023-03-14 15:14:05
+ * @LastEditTime: 2023-03-17 23:24:26
  * @Description: 游戏载体
  */
 import { getHdNum, getRandomInt } from "../helper"
 import Monster from "./monster"
 import Controlled from "./controlled"
+import star from '../images/star.png'
+import music from '../audio/1762.wav'
 export default class Chart {
+  audio:HTMLAudioElement
   width:number
   height:number
   container:HTMLCanvasElement // 主容器dom
@@ -35,11 +31,22 @@ export default class Chart {
     controlled.setChart(this)
     this.controlledList.push(controlled)
     setInterval(()=>{
-      const monster = new Monster(this.width,getRandomInt(0,this.height),getHdNum(30),getHdNum(30))
+      const monster = new Monster(this.width - getHdNum(30),getRandomInt(0,this.height),getHdNum(30),getHdNum(30))
       monster.setChart(this)
       this.monsterList.push(monster)
       monster.move()
-    },3000)
+    },1000)
+    // this.imgToCanvas(star)
+    setTimeout(() => {
+      this.audio = new Audio()
+      this.audio.src = music
+      this.audio.loop = true
+      this.audio.play()
+      this.audio.addEventListener("canplay", () => {
+        window.URL.revokeObjectURL(this.audio.src);
+     });
+    }, 3000);
+
   }
 
   // 初始化
@@ -52,11 +59,20 @@ export default class Chart {
       this.draw()
     })
     this.ctx.clearRect(0, 0, this.container.width, this.container.height)
-    this.monsterList.forEach(element => {
-      element.draw()
+    this.monsterList.forEach(monster => {
+      monster.draw()
     });
     this.controlledList.forEach(controlled =>{
       controlled.draw()
     })
+  }
+  // 水印
+  imgToCanvas(img) {
+    const image = new Image()
+    image.src = img
+    image.onload = ()=>{
+      console.log(image)
+      this.ctx.drawImage(image, 0, 0)
+    }
   }
 }

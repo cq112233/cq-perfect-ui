@@ -2,14 +2,15 @@
  * @Author: chen qi
  * @Date: 2023-03-08 09:29:08
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-14 01:43:49
+ * @LastEditTime: 2023-03-21 20:54:02
  * @Description: ~
  */
 // 导入颜色选择器组件
 import { defineAsyncComponent } from 'vue';
 import CqCalendar from './cq-calendar'
 import CqChart from './cq-chart'
-
+import CqUpload from './cq-upload'
+import CqTree from './cq-tree'
 const modules = import.meta.glob('./**/*.vue')
 const regExp:RegExp = /\/([a-z-]+)\/src\//
 const components:Record<string,any> = Object.keys(modules).reduce((pre, cur) => {
@@ -30,7 +31,9 @@ export {
   install,
   // 以下是具体的组件列表
   CqCalendar,
-  CqChart
+  CqChart,
+  CqUpload,
+  CqTree
 }
 
 export default install
