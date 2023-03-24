@@ -306,27 +306,7 @@ const hooks = {
 
 let legalDateClone = []
 
-watch(
-  () => props.value,
-  (values) => {
-    values.forEach((item) => {
-      selectedMap.value.set(getTodayStart(item as any).format(format), true)
-    })
-    dates.value = values.map(item => getTodayStart(item as any).format(format)).join(separator)
-  },
-  {
-    immediate: true
-  }
-)
 
-watch(
-  () => visible.value,
-  (value) => {
-    if (value) {
-      show()
-    }
-  }
-)
 
 const show = () => {
   initMonthDate = monthDate.clone()
@@ -761,6 +741,29 @@ const shortcutSelected = (arr = []) => {
     getManyMonths()
   }
 }
+
+watch(
+  () => props.value,
+  (values) => {
+    values.forEach((item) => {
+      selectedMap.value.set(getTodayStart(item as any).format(format), true)
+    })
+    dates.value = values.map(item => getTodayStart(item as any).format(format)).join(separator)
+    getManyMonths()
+  },
+  {
+    immediate: true
+  }
+)
+
+watch(
+  () => visible.value,
+  (value) => {
+    if (value) {
+      show()
+    }
+  }
+)
 
 /**
  * @description: 抛出方法

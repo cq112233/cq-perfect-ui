@@ -1,108 +1,127 @@
 <template>
-  <div class="flex">
-    <div v-for="(item, index) of col" :key="index">
-      <div :ref="`imgList${index + 1}`" :class="`imgList${index + 1}`">
-        <div v-for="(v, i) of imgs[`imgList${index + 1}`]">
-          <div
-            :style="{
-              width: '20px',
-              height: `${v.h}px`,
-              background: `rgb(${255*Math.random()},${255*Math.random()},${255*Math.random()})`
-            }"
-          >
-          </div>
-        </div>
+  <div class="">
+    <!-- 表头部 -->
+    <header class="flex">
+      <section
+        v-if="rowSelection"
+        :class="['center', 'w-40px']"
+        :style="{
+          border: '1px solid #000'
+        }"
+      >
+        <Checkbox @change="allSelected" v-model:checked="allChecked"></Checkbox>
+      </section>
+      <section
+        v-for="(column, index) of columns"
+        :key="index"
+        class="header-column center bg-red-300 h-50px"
+        :class="[column.width || 'flex-1', column.align || 'center']"
+        :style="{
+          width: `${column.width}px`,
+          height: `${column.height}px`,
+          border: '1px solid #000'
+        }"
+      >
+        <slot name="column" :column="column">
+          {{ column.title }}
+        </slot>
+      </section>
+    </header>
+    <!-- table列表 -->
+    <main>
+      <!-- 可拖拽区域 -->
+      <div @dragover="dragover" @drop="drop">
+        <!-- table -->
+        <template v-for="(row, index) of dataSource" :key="index">
+          <Row :data="row" :depth="0" :columns="columns" :prop="props" :p-id="'0'"></Row>
+        </template>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
-<script setup name="CqTree" lang="ts">
-import {
-  defineProps,
-  getCurrentInstance,
-  onMounted,
-  reactive,
-  nextTick,
-  ref
-} from 'vue'
-const prop = defineProps({
-  // 行
-  col: {
-    type: Number,
-    default: 4
-  },
-  // 图片
-  imgs: {
-    type: Array,
-    default: [
+<script setup name="CqDragTable" lang="ts">
+import Row from './components/row.vue'
+import 'ant-design-vue/es/checkbox/style/index.css'
+import { Checkbox } from 'ant-design-vue'
+import { defineProps, withDefaults, ref } from 'vue'
+import type { Column } from './types'
+const props = withDefaults(
+  defineProps<{
+    columns?: any
+    dataSource?: any
+    rowSelection?: any
+    draggable?: boolean
+  }>(),
+  {
+    draggable: true,
+    // 表头
+    columns: () => [
       {
-        h: Math.floor(Math.random() * 100),
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+        width: 200
       },
       {
-        h: Math.floor(Math.random() * 100)
+        title: '年龄',
+        dataIndex: 'age',
+        key: 'age'
       },
       {
-        h: Math.floor(Math.random() * 100)
-      },
-      {
-        h: Math.floor(Math.random() * 100)
-      },
-      {
-        h: Math.floor(Math.random() * 100),
-      },
-      {
-        h: Math.floor(Math.random() * 100)
-      },
-      {
-        h: Math.floor(Math.random() * 100)
-      },
-      {
-        h: Math.floor(Math.random() * 100)
+        title: '住址',
+        dataIndex: 'address',
+        key: 'address'
       }
-    ]
-  }
-})
-const instance = ref<any>()
-onMounted(() => {
-  const { proxy } = getCurrentInstance()
-  instance.value = proxy
-  // pushImg(prop.imgs)
-  pushImg(prop.imgs)
-})
-const { col } = prop
-const imgs = reactive({})
-for (let index = 1; index <= col; index++) {
-  const element = index
-  imgs[`imgList${index}`] = []
-}
-
-const getMinCol = () => {
-  let doms = []
-  for (const key in instance.value.$refs) {
-    if (Object.prototype.hasOwnProperty.call(instance.value.$refs, key)) {
-      const element = instance.value.$refs[key]
-      doms.push({ key, data: element[0] })
+    ],
+    //table
+    dataSource: () => [
+      {
+        key: '1',
+        name: '胡彦斌',
+        age: 32,
+        address: '西湖区湖底公园1号',
+        children: [
+          {
+            key: '11',
+            name: '胡彦斌',
+            age: 33,
+            address: '西湖区湖底公园1号'
+          }
+        ]
+      },
+      {
+        key: '2',
+        name: '胡彦祖',
+        age: 42,
+        address: '西湖区湖底公园1号'
+      }
+    ],
+    rowSelection: () => {
+      return true
     }
   }
-  doms = doms.sort(function (a, b) {
-    return a.data.offsetHeight - b.data.offsetHeight
-  })
+)
+const allChecked = ref(false)
+// 全选
+const allSelected = () => {}
 
-  return doms[0]
+const dragover = (e) => {
+  e.preventDefault()
+  e.dataTransfer.dropEffect = 'move'
+  // console.log(e);
 }
 
-function pushImg(imgList) {
-  let temp = imgList
-  let minKey = getMinCol()['key']
-  imgs[minKey].push(temp[0])
-  temp.splice(0,1)
-  if(temp.length) {
-    nextTick(() => {
-      pushImg(temp)
-    })
-  }
+// 参照到屏幕的距离
+const drop = (e:DragEvent) => {
+  e.preventDefault()
+
+  const { clientX,clientY  } = e
+  const dragId = e.dataTransfer.getData('dragId')
+  
+
+  console.log(e, '外drop')
 }
 </script>
 
-<style lang="" scoped></style>
+<style lang="less" scoped></style>

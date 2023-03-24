@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-08 09:29:08
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-21 20:54:02
+ * @LastEditTime: 2023-03-22 17:54:35
  * @Description: ~
  */
 // 导入颜色选择器组件
@@ -11,6 +11,7 @@ import CqCalendar from './cq-calendar'
 import CqChart from './cq-chart'
 import CqUpload from './cq-upload'
 import CqTree from './cq-tree'
+import CqMasonry from './cq-masonry'
 const modules = import.meta.glob('./**/*.vue')
 const regExp:RegExp = /\/([a-z-]+)\/src\//
 const components:Record<string,any> = Object.keys(modules).reduce((pre, cur) => {
@@ -33,7 +34,8 @@ export {
   CqCalendar,
   CqChart,
   CqUpload,
-  CqTree
+  CqTree,
+  CqMasonry
 }
 
 export default install

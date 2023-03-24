@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-22 16:19:53
+ * @LastEditTime: 2023-03-24 09:50:48
  * @Description: ~
 -->
 
@@ -12,21 +12,37 @@
   <router-link to="/about">about</router-link> -->
   <!-- <router-view></router-view> -->
   <!-- <CqChart/> -->
-  <!-- <CqCalendar v-model:value="value"/> -->
-  <!-- <CqUpload/> -->
+  <!-- <Button @click="visible = true">kai</Button>
+  <Drawer :visible="visible">
 
-  <CqTree/>
+  </Drawer> -->
+  <CqCalendar v-model:value="value"/>
+  <!-- <CqUpload/> -->
+  <div class="w-80vw m-auto mt-10px">
+    <!-- <CqTree/> -->
+  </div>
+
   <!-- <img :src="star" alt="" srcset=""> -->
   <!-- <HelloWorld msg="Vite + Vue" /> -->
 </template>
 
 <script setup lang="ts">
+import 'ant-design-vue/es/drawer/style/index.css'
+import { Drawer,Button } from 'ant-design-vue'
 import star from './assets/star.png'
 import { ref } from 'vue';
 import { CqCalendar, CqChart ,CqUpload,CqTree} from '../packages/index'
 // import { CqCalendar, CqChart } from '../lib/cq-perfect-ui.es.js'
 import '../lib/style.css'
+
 const value = ref([])
+
+setTimeout(()=>{
+  value.value = ['2023/03/26']
+},1000)
+
+const visible = ref(false)
+
 
 console.log(star);
 </script>
