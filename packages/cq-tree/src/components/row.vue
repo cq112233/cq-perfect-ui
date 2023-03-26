@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-23 22:01:26
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-26 14:24:32
+ * @LastEditTime: 2023-03-26 16:08:27
  * @Description: 行，拖拽目标
 -->
 <template>
@@ -27,9 +27,13 @@
           border: '1px solid #000'
         }"
       >
-        <Checkbox @change="selected" v-model:checked="checked"></Checkbox>
+        <Checkbox
+          @change="selected"
+          :indeterminate="indeterminate"
+          v-model:checked="data[customFieldName.checked]"
+        ></Checkbox>
       </section>
-      <div class="flex flex-1  overflow-hidden">
+      <div class="flex flex-1 overflow-hidden">
         <section
           v-for="(column, index) of columns"
           :key="index"
@@ -68,6 +72,7 @@
           :depth="depth + 1"
           :pId="row[customFieldName.pid]"
           :customFieldName="customFieldName"
+          @changeAllCheck="changeAllCheck"
         ></Row>
       </template>
     </template>
@@ -78,7 +83,9 @@
 import 'ant-design-vue/es/checkbox/style/index.css'
 import 'ant-design-vue/es/space/style/index.css'
 import { Checkbox, Space } from 'ant-design-vue'
-import { defineProps, withDefaults, ref, toRef, toRefs } from 'vue'
+import { defineProps, withDefaults, ref, toRef, toRefs, watch } from 'vue'
+import { treeToList } from '../helper'
+const emits = defineEmits(['changeAllCheck'])
 const props = withDefaults(
   defineProps<{
     data: any
@@ -117,7 +124,79 @@ const props = withDefaults(
 const { prop, data, customFieldName } = toRefs(props)
 
 const checked = ref(false)
-const selected = () => {}
+const indeterminate = ref(false)
+
+// 选中的
+const selected = (e) => {
+  function dg(data1, status) {
+    data1.forEach((element) => {
+      element.checked = status
+      if (element.children) {
+        dg(element.children, status)
+      }
+    })
+  }
+  if (e.target.checked) {
+    dg([data.value], true)
+  } else {
+    dg([data.value], false)
+  }
+}
+
+// // 监视当前状态
+watch(
+  () => data.value[customFieldName.value.checked],
+  (value) => {
+    // 选中的list
+    const list = treeToList(
+      prop.value.dataSource,
+      customFieldName.value
+    )
+   const selectedList = list
+    .filter((item) => {
+      return item[customFieldName.value.checked]
+    })
+    const parentRow = list.find(item=>{
+     return item[customFieldName.value.id] === data.value[customFieldName.value.pid]
+    })
+    let parentChildrenSelectedRow
+
+    if(parentRow && parentRow[customFieldName.value.children]) {
+      parentChildrenSelectedRow = parentRow[customFieldName.value.children].filter((item) => {
+      return item[customFieldName.value.checked]
+    })
+    }
+    
+    emits('changeAllCheck', {
+      row: data.value,
+      checked: value,
+      selectedList,
+      parentRow,
+      parentChildrenSelectedRow,
+      list
+    })
+  }
+)
+
+// 向上传递
+const changeAllCheck = (value) => {
+  const {parentRow,parentChildrenSelectedRow} = value
+  if (
+    parentChildrenSelectedRow.length > 0 &&
+    parentChildrenSelectedRow.length < parentRow[customFieldName.value.children].length
+  ) {
+    indeterminate.value = true
+  }
+  if (parentChildrenSelectedRow.length === 0) {
+    indeterminate.value = false
+    parentRow[customFieldName.value.checked] = false
+  }
+  if (parentChildrenSelectedRow.length === parentRow[customFieldName.value.children].length) {
+    indeterminate.value = false
+    parentRow[customFieldName.value.checked] = true
+  }
+  emits('changeAllCheck', value)
+}
 
 const dragstart = (e) => {
   // console.log(e, '内dragstart')

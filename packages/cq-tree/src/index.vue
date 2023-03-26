@@ -9,7 +9,11 @@
           border: bordered ? '1px solid #000' : ''
         }"
       >
-        <Checkbox @change="allSelected" v-model:checked="allChecked"></Checkbox>
+        <Checkbox
+          @change="allSelected"
+          :indeterminate="indeterminate"
+          v-model:checked="allChecked"
+        ></Checkbox>
       </section>
       <div class="flex flex-1 overflow-hidden">
         <section
@@ -50,6 +54,7 @@
             :prop="props"
             :customFieldName="customFieldName"
             :p-id="row[customFieldName.pid]"
+            @changeAllCheck="changeAllCheck"
           ></Row>
         </template>
       </div>
@@ -61,7 +66,7 @@
 import Row from './components/row.vue'
 import 'ant-design-vue/es/checkbox/style/index.css'
 import { Checkbox } from 'ant-design-vue'
-import { defineProps, withDefaults, ref, toRefs } from 'vue'
+import { defineProps, withDefaults, ref, toRefs, watch } from 'vue'
 import type { Column } from './types'
 import { cloneDeep } from 'lodash-es'
 import { clearStyle, getRowByClassName, treeToList } from './helper'
@@ -79,7 +84,8 @@ const props = withDefaults(
       return {
         id: 'key',
         pid: 'pid',
-        children: 'children'
+        children: 'children',
+        checked: 'checked'
       }
     },
     bordered: true,
@@ -140,11 +146,53 @@ const emits = defineEmits(['update:dataSource'])
 const { dataSource, customFieldName } = toRefs(props)
 const targetId = ref('')
 const insertWhere = ref('') // 有三种状态，插上，插入，插下
-const allChecked = ref(false)
+const indeterminate = ref(false) // 半选状态
+const allChecked = ref(false) // 选中状态
 const resizeBorderObj = ref<any>({})
+const dataSourceList = treeToList(dataSource.value, customFieldName.value)
 // 全选
-const allSelected = () => {}
+const allSelected = (e) => {
+  function dg(data, status) {
+    data.forEach((element) => {
+      element.checked = status
+      if (element.children) {
+        dg(element.children, status)
+      }
+    })
+  }
+  if (e.target.checked) {
+    dg(dataSource.value, true)
+  } else {
+    dg(dataSource.value, false)
+  }
+}
 
+watch(
+  () => dataSource.value,
+  (value) => {
+    console.log('watch', value)
+  }
+)
+
+// 事件监听
+const changeAllCheck = (value) => {
+  if (
+    value.selectedList.length > 0 &&
+    value.selectedList.length < dataSourceList.length
+  ) {
+    indeterminate.value = true
+  }
+  if (value.selectedList.length === 0) {
+    indeterminate.value = false
+    allChecked.value = false
+  }
+  if (value.selectedList.length === dataSourceList.length) {
+    indeterminate.value = false
+    allChecked.value = true
+  }
+}
+
+// 核心代码
 const dragover = (e) => {
   e.dataTransfer.dropEffect = 'move'
   const rows: HTMLElement[] = getRowByClassName()
@@ -264,8 +312,8 @@ function copyTree(dataSource, newDataSource = [], drag, customFieldName) {
 const move = (e) => {
   const { left } = resizeBorderObj.value.option as DOMRect
   const columnIndex = resizeBorderObj.value.columnIndex
-  const columns = [...getRowByClassName('header-column') as HTMLElement[]]
-  const rows = [...getRowByClassName('row-column') as HTMLElement[]]
+  const columns = [...(getRowByClassName('header-column') as HTMLElement[])]
+  const rows = [...(getRowByClassName('row-column') as HTMLElement[])]
   const column = columns[columnIndex]
   const { offsetWidth } = column
   const { left: columnLeft } = column.getBoundingClientRect() as DOMRect
@@ -275,13 +323,17 @@ const move = (e) => {
   column.style.flex = 'none'
   column.style.width = newWidth + 'px'
   try {
-    for (let index = columnIndex; index < rows.length; index = index + props.columns.length) {
-    const row = rows[index]
-    row.style.flex = 'none'
-    row.style.width = newWidth + 'px'
-  }
+    for (
+      let index = columnIndex;
+      index < rows.length;
+      index = index + props.columns.length
+    ) {
+      const row = rows[index]
+      row.style.flex = 'none'
+      row.style.width = newWidth + 'px'
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 
   // diffX 正向右 负向左
