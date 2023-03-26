@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-24 09:50:48
+ * @LastEditTime: 2023-03-26 10:25:44
  * @Description: ~
 -->
 
@@ -16,10 +16,10 @@
   <Drawer :visible="visible">
 
   </Drawer> -->
-  <CqCalendar v-model:value="value"/>
+  <!-- <CqCalendar v-model:value="value"/> -->
   <!-- <CqUpload/> -->
-  <div class="w-80vw m-auto mt-10px">
-    <!-- <CqTree/> -->
+  <div class="w-80vw m-auto mt-200px ml-300px relative">
+    <CqTree v-model:dataSource='value' />
   </div>
 
   <!-- <img :src="star" alt="" srcset=""> -->
@@ -35,11 +35,47 @@ import { CqCalendar, CqChart ,CqUpload,CqTree} from '../packages/index'
 // import { CqCalendar, CqChart } from '../lib/cq-perfect-ui.es.js'
 import '../lib/style.css'
 
-const value = ref([])
-
-setTimeout(()=>{
-  value.value = ['2023/03/26']
-},1000)
+const value = ref([
+      {
+        key: '1',
+        name: '胡彦斌1',
+        age: 32,
+        address: '西湖区湖底公园1号',
+        pid: '0',
+        children: [
+          {
+            pid: '1',
+            key: '11',
+            name: '胡彦斌11',
+            age: 33,
+            address: '西湖区湖底公园1号'
+          },
+          {
+            pid: '1',
+            key: '12',
+            name: '胡彦斌12',
+            age: 12,
+            address: '西湖区湖底公园1号'
+          }
+        ]
+      },
+      {
+        pid: '0',
+        key: '2',
+        name: '胡彦祖2',
+        age: 42,
+        address: '西湖区湖底公园1号',
+        children:[]
+      },
+      {
+        pid: '0',
+        key: '3',
+        name: '刘德华',
+        age: 42,
+        address: '西湖区湖底公园1号',
+        children:[]
+      }
+    ])
 
 const visible = ref(false)
 
