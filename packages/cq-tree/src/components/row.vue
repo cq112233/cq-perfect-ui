@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-23 22:01:26
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-26 16:08:27
+ * @LastEditTime: 2023-03-26 16:34:08
  * @Description: 行，拖拽目标
 -->
 <template>
@@ -29,7 +29,7 @@
       >
         <Checkbox
           @change="selected"
-          :indeterminate="indeterminate"
+          :indeterminate="data[customFieldName.indeterminate]"
           v-model:checked="data[customFieldName.checked]"
         ></Checkbox>
       </section>
@@ -123,16 +123,15 @@ const props = withDefaults(
 )
 const { prop, data, customFieldName } = toRefs(props)
 
-const checked = ref(false)
-const indeterminate = ref(false)
-
 // 选中的
 const selected = (e) => {
-  function dg(data1, status) {
-    data1.forEach((element) => {
-      element.checked = status
-      if (element.children) {
-        dg(element.children, status)
+  const checkedKey = customFieldName.value.checked
+  const childrenKey = customFieldName.value.children
+  function dg(data, status) {
+    data.forEach((element) => {
+      element[checkedKey] = status
+      if (element[childrenKey]) {
+        dg(element[childrenKey], status)
       }
     })
   }
@@ -143,24 +142,28 @@ const selected = (e) => {
   }
 }
 
-// // 监视当前状态
+// // 选中
 watch(
   () => data.value[customFieldName.value.checked],
   (value) => {
-    // 选中的list
+    // 全部
     const list = treeToList(
       prop.value.dataSource,
       customFieldName.value
     )
+   // 选中的
    const selectedList = list
     .filter((item) => {
       return item[customFieldName.value.checked]
     })
+
+    // 父row
     const parentRow = list.find(item=>{
      return item[customFieldName.value.id] === data.value[customFieldName.value.pid]
     })
     let parentChildrenSelectedRow
 
+    // 父选中的
     if(parentRow && parentRow[customFieldName.value.children]) {
       parentChildrenSelectedRow = parentRow[customFieldName.value.children].filter((item) => {
       return item[customFieldName.value.checked]
@@ -180,19 +183,21 @@ watch(
 
 // 向上传递
 const changeAllCheck = (value) => {
+
+  // 半选，全选状态
   const {parentRow,parentChildrenSelectedRow} = value
   if (
     parentChildrenSelectedRow.length > 0 &&
     parentChildrenSelectedRow.length < parentRow[customFieldName.value.children].length
   ) {
-    indeterminate.value = true
+    parentRow[customFieldName.value.indeterminate] = true
   }
   if (parentChildrenSelectedRow.length === 0) {
-    indeterminate.value = false
+    parentRow[customFieldName.value.indeterminate] = false
     parentRow[customFieldName.value.checked] = false
   }
   if (parentChildrenSelectedRow.length === parentRow[customFieldName.value.children].length) {
-    indeterminate.value = false
+    parentRow[customFieldName.value.indeterminate] = false
     parentRow[customFieldName.value.checked] = true
   }
   emits('changeAllCheck', value)

@@ -31,13 +31,13 @@
             {{ column.title }}
           </slot>
           <!-- 拖拽 -->
-          <!-- <section
+          <section
             class="absolute right-0 h-full bg-[yellow] transform border-resize"
             @mousedown="mousedown($event, index)"
             @mouseup="mouseup"
           >
             1
-          </section> -->
+          </section>
         </section>
       </div>
     </header>
@@ -85,7 +85,8 @@ const props = withDefaults(
         id: 'key',
         pid: 'pid',
         children: 'children',
-        checked: 'checked'
+        checked: 'checked',
+        indeterminate:'indeterminate'
       }
     },
     bordered: true,
@@ -96,7 +97,7 @@ const props = withDefaults(
         title: '姓名',
         dataIndex: 'name',
         key: 'name',
-        width: 200
+        width: 400
       },
       {
         title: '年龄',
@@ -142,7 +143,7 @@ const props = withDefaults(
     }
   }
 )
-const emits = defineEmits(['update:dataSource'])
+const emits = defineEmits(['update:dataSource','checked'])
 const { dataSource, customFieldName } = toRefs(props)
 const targetId = ref('')
 const insertWhere = ref('') // 有三种状态，插上，插入，插下
@@ -152,11 +153,14 @@ const resizeBorderObj = ref<any>({})
 const dataSourceList = treeToList(dataSource.value, customFieldName.value)
 // 全选
 const allSelected = (e) => {
+  const checkedKey = customFieldName.value.checked
+  const childrenKey = customFieldName.value.children
+
   function dg(data, status) {
     data.forEach((element) => {
-      element.checked = status
-      if (element.children) {
-        dg(element.children, status)
+      element[checkedKey] = status
+      if (element[childrenKey]) {
+        dg(element[childrenKey], status)
       }
     })
   }
@@ -174,7 +178,7 @@ watch(
   }
 )
 
-// 事件监听
+// 事件监听,全选
 const changeAllCheck = (value) => {
   if (
     value.selectedList.length > 0 &&
@@ -190,6 +194,7 @@ const changeAllCheck = (value) => {
     indeterminate.value = false
     allChecked.value = true
   }
+  emits('checked',value)
 }
 
 // 核心代码
@@ -237,14 +242,14 @@ const dragover = (e) => {
   const dragPid = window._cqDragTargeting.getAttribute('data-pid')
   // 平级才能移动,逻辑
   // 父级不相同的就不能移动
-  if (targetPid !== dragPid) {
-    targetId.value = ''
-  } else {
-    //父级相同 中间位置不能插入
-    if (insertWhere.value === 'cq-center') {
-      targetId.value = ''
-    }
-  }
+  // if (targetPid !== dragPid) {
+  //   targetId.value = ''
+  // } else {
+  //   //父级相同 中间位置不能插入
+  //   if (insertWhere.value === 'cq-center') {
+  //     targetId.value = ''
+  //   }
+  // }
 }
 
 // 参照到屏幕的距离
@@ -268,6 +273,7 @@ const drop = (e: DragEvent) => {
   }
 }
 
+// 创建新tree
 function copyTree(dataSource, newDataSource = [], drag, customFieldName) {
   const pid = customFieldName.pid
   const id = customFieldName.id
@@ -309,6 +315,51 @@ function copyTree(dataSource, newDataSource = [], drag, customFieldName) {
   return newDataSource
 }
 
+
+// 获取选中id
+const getSelectedIds = ()=> {
+  let idList = []
+  const idKey = customFieldName.value.id
+  const checkedKey = customFieldName.value.checked
+  const childrenKey = customFieldName.value.children
+
+  function dg(data) {
+    data.forEach((element) => {
+      if (element[checkedKey]){
+        idList.push(element[idKey])
+      }
+      if (element[childrenKey]) {
+        dg(element[childrenKey])
+      }
+    })
+  }
+  dg(dataSource.value)
+
+  return idList
+}
+// 半选状态
+const getHalfIds = ()=> {
+  let idList = []
+  const idKey = customFieldName.value.id
+  const indeterminateKey = customFieldName.value.indeterminate
+  const childrenKey = customFieldName.value.children
+
+  function dg(data) {
+    data.forEach((element) => {
+      if (element[indeterminateKey]){
+        idList.push(element[idKey])
+      }
+      if (element[childrenKey]) {
+        dg(element[childrenKey])
+      }
+    })
+  }
+  dg(dataSource.value)
+
+  return idList
+}
+
+// 以下扩展代码
 const move = (e) => {
   const { left } = resizeBorderObj.value.option as DOMRect
   const columnIndex = resizeBorderObj.value.columnIndex
@@ -351,7 +402,12 @@ const mousedown = (event: Event, columnIndex: number) => {
     window.removeEventListener('mousemove', move)
   })
 }
-const mouseup = () => {}
+
+defineExpose({
+  getSelectedIds,
+  getHalfIds
+})
+
 </script>
 
 <style lang="less" scoped>
