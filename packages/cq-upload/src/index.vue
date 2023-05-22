@@ -2,14 +2,13 @@
  * @Author: chen qi
  * @Date: 2023-03-20 17:23:31
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-22 16:17:40
+ * @LastEditTime: 2023-04-17 16:54:34
  * @Description: ~
 -->
 <template>
   <div class="">
     <div
       class="w-200px h-200px border-1px"
-      @dragstart="dragstart"
       @dragenter="dragenter"
       @dragover="dragover"
       @drop="drop"
@@ -25,7 +24,7 @@
   </div>
 </template>
 
-<script setup name="" lang="ts">
+<script setup name="CqUpload" lang="ts">
 import SparkMD5 from 'spark-md5'
 import axios from 'axios'
 import { ref } from 'vue'

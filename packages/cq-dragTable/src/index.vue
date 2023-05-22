@@ -410,6 +410,13 @@ defineExpose({
 
 </script>
 
+<script lang="ts">
+export default {
+  name: 'cq-dragTable'
+  // inheritAttrs:true,
+}
+</script>
+
 <style lang="less" scoped>
 .border-resize {
   transform: translateX(50%);
