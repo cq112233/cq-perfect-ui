@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-06-21 14:50:35
+ * @LastEditTime: 2023-10-12 15:54:33
  * @Description: ~
 -->
 
@@ -12,7 +12,11 @@
   <!-- <div class="w-80vw">
     <CqDragTable v-model:dataSource="value" @checked="checked" ref="cqTree" />
   </div> -->
-  <CqAnimation/>
+  <!-- <CqChart></CqChart> -->
+  <!-- <CqChart></CqChart> -->
+  <!-- <CqAnimation/> -->
+  <!-- <CqExcelChart/> -->
+  <cqRange></cqRange> 
 </template>
 
 <script setup lang="ts">
@@ -24,7 +28,8 @@ import {
   CqUpload,
   CqDragTable,
   CqSortTree,
-  CqAnimation
+  CqAnimation,
+  CqExcelChart
 } from '../packages/index'
 
 const value = ref([

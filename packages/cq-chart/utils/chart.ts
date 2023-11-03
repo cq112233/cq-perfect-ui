@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 21:39:45
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-17 23:24:26
+ * @LastEditTime: 2023-08-11 15:47:08
  * @Description: 游戏载体
  */
 import { getHdNum, getRandomInt } from "../helper"
@@ -37,15 +37,15 @@ export default class Chart {
       monster.move()
     },1000)
     // this.imgToCanvas(star)
-    setTimeout(() => {
-      this.audio = new Audio()
-      this.audio.src = music
-      this.audio.loop = true
-      this.audio.play()
-      this.audio.addEventListener("canplay", () => {
-        window.URL.revokeObjectURL(this.audio.src);
-     });
-    }, 3000);
+    // setTimeout(() => {
+    //   this.audio = new Audio()
+    //   this.audio.src = music
+    //   this.audio.loop = true
+    //   this.audio.play()
+    //   this.audio.addEventListener("canplay", () => {
+    //     window.URL.revokeObjectURL(this.audio.src);
+    //  });
+    // }, 3000);
 
   }
 

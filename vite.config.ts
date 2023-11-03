@@ -2,7 +2,7 @@
  * @Author: chen qi
  * @Date: 2023-03-13 22:39:10
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-21 09:42:56
+ * @LastEditTime: 2023-10-12 18:18:33
  * @Description: ~
  */
 import { defineConfig } from 'vite'
@@ -13,8 +13,11 @@ import pkg from './package.json'
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    host: true,
-    port: 3000,
+    hmr: {
+      overlay: true,
+      // 解决热更新不同步的问题
+      port: 3000
+    },
     proxy: {
       // 使用 proxy 实例
       '/api': {

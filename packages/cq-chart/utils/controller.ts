@@ -5,7 +5,7 @@ import Controlled from './controlled'
  * @Author: chen qi
  * @Date: 2023-03-14 15:58:54
  * @LastEditors: chen qi
- * @LastEditTime: 2023-03-17 09:26:57
+ * @LastEditTime: 2023-08-11 17:09:55
  * @Description: 控制器
  */
 export default class Controller {
@@ -35,7 +35,8 @@ export default class Controller {
     this.controlled = controlled
     dom.addEventListener(
       'keydown',
-      (e) => {
+      (e) => {  
+        e.preventDefault()
         const { x, y } = controlled.getPosition()
         if (e.key === 'ArrowUp') {
           if( this.operation.ArrowUp.state) return
@@ -66,6 +67,7 @@ export default class Controller {
     dom.addEventListener(
       'keyup',
       (e) => {
+        e.preventDefault()
         if (e.key === 'ArrowUp') {
           this.operation.ArrowUp.state = false
           controlled.stopMove()
